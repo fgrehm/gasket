@@ -22,6 +22,13 @@ var compileCommand = function(p, opts) {
   if (opts.stderr) child.stderr.pipe(opts.stderr)
   else child.stderr.resume()
 
+  child.on('close', function(exitCode) {
+    if (exitCode != 0) {
+      console.log('Error executing "' + p.command + '" (exited with ' + exitCode + ')')
+      process.exit(exitCode)
+    }
+  })
+
   return duplexer(child.stdin, child.stdout)
 }
 
